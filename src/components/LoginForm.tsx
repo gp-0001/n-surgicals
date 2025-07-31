@@ -15,14 +15,12 @@ export default function LoginForm() {
     e.preventDefault();
     setLoading(true);
     setError('');
-    
     try {
       await login(email, password);
       nav('/catalog');
     } catch (error: any) {
       setError(error.message);
     }
-    
     setLoading(false);
   };
 
@@ -33,38 +31,42 @@ export default function LoginForm() {
           {error}
         </div>
       )}
-      
       <div>
-        <label className="block text-gray-700 mb-1">Email</label>
+        <label className="block text-black mb-1">Email</label>
         <input
           type="email"
           required
           value={email}
           onChange={e => setEmail(e.target.value)}
-          className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-300 transition"
+          placeholder="you@example.com"
           disabled={loading}
-          placeholder="your@email.com"
+          className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black transition"
         />
       </div>
-      
       <div>
-        <label className="block text-gray-700 mb-1">Password</label>
+        <label className="block text-black mb-1">Password</label>
         <input
           type="password"
           required
           value={password}
           onChange={e => setPassword(e.target.value)}
-          className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-300 transition"
-          disabled={loading}
           placeholder="••••••••"
+          disabled={loading}
+          className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black transition"
         />
       </div>
-      
       <button
         type="submit"
         disabled={loading}
-        className="w-full py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 
-                   transition disabled:opacity-50 disabled:cursor-not-allowed"
+        className="
+          w-full py-3
+          bg-black/60 text-white
+          rounded-lg
+          hover:bg-black/80
+          focus:ring-2 focus:ring-white
+          transition
+          disabled:opacity-50 disabled:cursor-not-allowed
+        "
       >
         {loading ? '🔄 Logging in...' : '🔐 Login'}
       </button>

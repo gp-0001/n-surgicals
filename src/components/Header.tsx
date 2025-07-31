@@ -1,5 +1,5 @@
 // src/components/Header.tsx
-import { NavLink } from 'react-router-dom';
+import React from 'react';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function Header() {
@@ -16,49 +16,44 @@ export default function Header() {
   return (
     <header className="bg-white shadow">
       <nav className="container mx-auto flex items-center justify-between p-4">
-        <div className="text-xl font-bold text-blue-700">
-          N Surgicals
+        {/* Brand */}
+        <div className="text-5xl font-extrabold uppercase font-serif text-black">
+          N Surgicals
         </div>
-        
-        <div className="flex items-center space-x-6">
-          {/* Navigation Links */}
-          <NavLink
-            to="/catalog"
-            className={({ isActive }) =>
-              isActive
-                ? 'font-semibold text-blue-600'
-                : 'text-gray-600 hover:text-blue-600'
-            }
-          >
-            Catalog
-          </NavLink>
-          
-          {/* Admin link - only show for admin users */}
+
+        <div className="flex items-center space-x-6 text-sm">
+          {/* Admin Panel (if you’re an admin) */}
           {hasRole('admin') && (
-            <NavLink
-              to="/admin"
-              className={({ isActive }) =>
-                isActive
-                  ? 'font-semibold text-blue-600'
-                  : 'text-gray-600 hover:text-blue-600'
-              }
+            <a
+              href="/admin"
+              className="text-black hover:text-gray-700 font-semibold"
             >
-              Admin Panel
-            </NavLink>
+              Admin Panel
+            </a>
           )}
 
-          {/* User Info */}
+          {/* User info + Logout */}
           {userProfile && (
             <div className="flex items-center space-x-4">
-              <div className="text-sm text-gray-600">
-                <span className="font-medium">{userProfile.firstName} {userProfile.lastName}</span>
-                <span className="block text-xs capitalize">({userProfile.role})</span>
+              <div className="text-black">
+                <div className="font-medium">
+                  {userProfile.firstName} {userProfile.lastName}
+                </div>
+                <div className="text-xs capitalize">
+                  ({userProfile.role})
+                </div>
               </div>
-              
+
               <button
                 onClick={handleLogout}
-                className="px-4 py-2 text-sm bg-blue-100 text-blue-700 rounded-lg 
-                           hover:bg-blue-200 transition"
+                className="
+                  px-4 py-2 text-sm
+                  bg-black text-white
+                  rounded-lg
+                  hover:bg-gray-800
+                  focus:outline-none focus:ring-2 focus:ring-black
+                  transition
+                "
               >
                 Logout
               </button>
@@ -67,5 +62,5 @@ export default function Header() {
         </div>
       </nav>
     </header>
-  );
+);
 }

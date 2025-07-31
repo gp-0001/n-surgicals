@@ -9,13 +9,19 @@ interface ProductCardProps {
   userRole: UserRole;
 }
 
-export default function ProductCard({ product, onClick, userRole }: ProductCardProps) {
+export default function ProductCard({
+  product,
+  onClick,
+  userRole,
+}: ProductCardProps) {
   const isLowStock = product.currentStock <= product.minStockLevel;
   const isOutOfStock = product.currentStock === 0;
 
   return (
     <div
       onClick={onClick}
+      // apply Castellar for everything in this card
+      style={{ fontFamily: 'Castellar, serif' }}
       className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer overflow-hidden"
     >
       {/* Image */}
@@ -50,7 +56,7 @@ export default function ProductCard({ product, onClick, userRole }: ProductCardP
               Low Stock
             </span>
           ) : (
-            <span className="bg-green-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
+            <span className="bg-bay-leaf-400 text-white px-2 py-1 rounded-full text-xs font-semibold">
               In Stock
             </span>
           )}
@@ -60,17 +66,17 @@ export default function ProductCard({ product, onClick, userRole }: ProductCardP
       {/* Content */}
       <div className="p-4">
         {/* Category */}
-        <div className="text-xs text-blue-600 font-semibold uppercase tracking-wide mb-1">
+        <div className="text-xs text-black font-semibold uppercase tracking-wide mb-1">
           {product.category}
         </div>
 
         {/* Name */}
-        <h3 className="text-lg font-semibold text-gray-800 mb-2 line-clamp-2">
+        <h3 className="text-lg font-semibold text-black mb-2 line-clamp-2">
           {product.name}
         </h3>
 
         {/* Description */}
-        <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+        <p className="text-gray-700 text-sm mb-3 line-clamp-2">
           {product.description}
         </p>
 
@@ -78,12 +84,16 @@ export default function ProductCard({ product, onClick, userRole }: ProductCardP
         <div className="flex justify-between items-center">
           <div className="text-sm">
             <span className="text-gray-500">Stock: </span>
-            <span className={`font-semibold ${isLowStock ? 'text-red-600' : 'text-green-600'}`}>
+            <span
+              className={`font-semibold ${
+                isLowStock ? 'text-red-600' : 'text-bay-leaf-600'
+              }`}
+            >
               {product.currentStock}
             </span>
           </div>
-          
-          <div className="text-lg font-bold text-blue-600">
+
+          <div className="text-lg font-bold text-black">
             ${product.unitPrice.toFixed(2)}
           </div>
         </div>

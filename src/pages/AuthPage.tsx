@@ -1,53 +1,64 @@
 // src/pages/AuthPage.tsx
-import React, { useState } from 'react';
-import LoginForm from '../components/LoginForm';
-import SignupForm from '../components/SignupForm';
+import React, { useState } from 'react'
+import LoginForm from '../components/LoginForm'
+import SignupForm from '../components/SignupForm'
 
 export default function AuthPage() {
-  const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState(true)
+  const bgUrl = '/images/emergency-essentials.jpg' // your background
 
   return (
-    <div className="flex h-screen bg-white">
-      {/* LEFT: Image */}
-      <div className="hidden md:block md:w-1/2 h-full">
-        <div className="w-full h-full bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center">
-          <div className="text-center text-white">
-            <h1 className="text-6xl font-bold mb-4">N Surgicals</h1>
-            <p className="text-xl">Your trusted pharmaceutical partner</p>
-          </div>
-        </div>
-      </div>
+    <div
+      className="relative h-screen w-full bg-cover bg-center"
+      style={{ backgroundImage: `url('${bgUrl}')` }}
+    >
+      {/* Dim the background for contrast */}
+      <div className="absolute inset-0 bg-black/40" />
 
-      {/* RIGHT: Container for brand + card */}
-      <div className="w-full md:w-1/2 flex flex-col items-center justify-center p-6">
-        {/* The card itself */}
-        <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg p-8 border">
+      {/* Centered panel */}
+      <div className="absolute inset-0 flex items-center justify-center p-4">
+        <div
+          className="
+            bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg
+            w-full max-w-md p-6 sm:p-8
+            max-h-[90vh] overflow-y-auto
+          "
+        >
+          {/* Brand */}
+          <h1 className="text-3xl font-heading text-bay-leaf-700 text-center mb-6">
+            N Surgicals
+          </h1>
+
           {/* Tabs */}
-          <div className="flex justify-center mb-6 space-x-4">
+          <div className="flex justify-center mb-6 space-x-4 border-b">
             <button
               onClick={() => setIsLogin(true)}
-              className={`px-4 py-2 font-medium rounded-t-lg transition ${
-                isLogin ? 'bg-gray-100 text-black border-b-2 border-blue-500' : 'text-gray-500 hover:text-black'
+              className={`pb-2 text-sm font-medium transition ${
+                isLogin
+                  ? 'border-b-2 border-gray text-gray'
+                  : 'text-gray-500 hover:text-gray-700'
               }`}
             >
               Login
             </button>
             <button
               onClick={() => setIsLogin(false)}
-              className={`px-4 py-2 font-medium rounded-t-lg transition ${
-                !isLogin ? 'bg-gray-100 text-black border-b-2 border-blue-500' : 'text-gray-500 hover:text-black'
+              className={`pb-2 text-sm font-medium transition ${
+                !isLogin
+                  ? 'border-b-2 border-gray text-gray'
+                  : 'text-gray-500 hover:text-gray-700'
               }`}
             >
-              Sign Up
+              Sign Up
             </button>
           </div>
 
-          {/* Active form */}
-          <div className="transition-opacity duration-200">
+          {/* Active Form */}
+          <div className="space-y-4">
             {isLogin ? <LoginForm /> : <SignupForm />}
           </div>
         </div>
       </div>
     </div>
-  );
+  )
 }

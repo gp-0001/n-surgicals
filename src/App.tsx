@@ -1,6 +1,11 @@
-// src/App.tsx - Complete working version with built-in header
+// src/App.tsx
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate
+} from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import AuthPage from './pages/AuthPage';
 import Catalog from './pages/Catalog';
@@ -31,42 +36,32 @@ function AppHeader() {
     console.log('⚙️ DEBUG: Is admin:', hasRole('admin'));
   };
 
-  const handleCatalogClick = (e: React.MouseEvent) => {
-    console.log('📦 DEBUG: Catalog link clicked');
-  };
-
   return (
     <header className="bg-white shadow-md border-b">
-      <div className="container mx-auto px-6 py-4">
+      <div className="px-4 py-4">
         <div className="flex justify-between items-center">
           {/* Logo */}
-          <div className="text-2xl font-bold text-blue-600">
-            N Surgicals
+          <div
+            style={{ fontFamily: 'Paradiso, serif' }}
+            className="text-5xl font-extrabold uppercase text-gray-600"
+          >
+            N Surgicals
           </div>
-          
+
           {/* Navigation & User Info */}
           <div className="flex items-center space-x-6">
-            {/* Navigation Links */}
-            <a
-              href="/catalog"
-              onClick={handleCatalogClick}
-              className="text-gray-700 hover:text-blue-600 font-medium px-3 py-2 rounded"
-            >
-              📦 Catalog
-            </a>
-            
             {/* Admin Panel Link - Only for Admins */}
             {hasRole('admin') && (
               <a
                 href="/admin"
                 onClick={handleAdminClick}
-                className="text-gray-700 hover:text-blue-600 font-medium px-3 py-2 rounded"
+                className="text-black hover:text-gray-700 font-medium px-3 py-2 rounded"
               >
                 ⚙️ Admin Panel
               </a>
             )}
 
-            {/* User Info */}
+            {/* User Info + Logout */}
             {userProfile && (
               <div className="flex items-center space-x-4 border-l pl-6">
                 <div className="text-right">
@@ -77,12 +72,19 @@ function AppHeader() {
                     {userProfile.role} • {userProfile.company}
                   </div>
                 </div>
-                
+
                 <button
                   onClick={handleLogout}
-                  className="px-4 py-2 bg-red-500 text-white text-sm font-medium rounded-lg hover:bg-red-600 transition-colors"
+                  className="
+                    px-4 py-2 text-sm
+                    bg-black text-white
+                    rounded-lg
+                    hover:bg-gray-800
+                    focus:outline-none focus:ring-2 focus:ring-black
+                    transition-colors
+                  "
                 >
-                  🚪 Logout
+                  Logout
                 </button>
               </div>
             )}
@@ -98,9 +100,7 @@ function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-gray-50">
       <AppHeader />
-      <main className="flex-1">
-        {children}
-      </main>
+      <main className="flex-1">{children}</main>
     </div>
   );
 }
@@ -108,20 +108,20 @@ function AppLayout({ children }: { children: React.ReactNode }) {
 // Protected Route Component
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { currentUser, loading } = useAuth();
-  
+
   console.log('🛡️ DEBUG: ProtectedRoute - currentUser:', currentUser);
   console.log('🛡️ DEBUG: ProtectedRoute - loading:', loading);
-  
+
   if (loading) {
     console.log('🛡️ DEBUG: ProtectedRoute - showing loading spinner');
     return <LoadingSpinner />;
   }
-  
+
   if (!currentUser) {
     console.log('🛡️ DEBUG: ProtectedRoute - no user, redirecting to /auth');
     return <Navigate to="/auth" replace />;
   }
-  
+
   console.log('🛡️ DEBUG: ProtectedRoute - user authenticated, showing content');
   return <AppLayout>{children}</AppLayout>;
 }
@@ -129,26 +129,26 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 // Admin Route Component
 function AdminRoute({ children }: { children: React.ReactNode }) {
   const { hasRole, loading, currentUser } = useAuth();
-  
+
   console.log('👑 DEBUG: AdminRoute - currentUser:', currentUser);
   console.log('👑 DEBUG: AdminRoute - loading:', loading);
   console.log('👑 DEBUG: AdminRoute - hasRole(admin):', hasRole('admin'));
-  
+
   if (loading) {
     console.log('👑 DEBUG: AdminRoute - showing loading spinner');
     return <LoadingSpinner />;
   }
-  
+
   if (!currentUser) {
     console.log('👑 DEBUG: AdminRoute - no user, redirecting to /auth');
     return <Navigate to="/auth" replace />;
   }
-  
+
   if (!hasRole('admin')) {
     console.log('👑 DEBUG: AdminRoute - user not admin, redirecting to /catalog');
     return <Navigate to="/catalog" replace />;
   }
-  
+
   console.log('👑 DEBUG: AdminRoute - user is admin, showing admin content');
   return <AppLayout>{children}</AppLayout>;
 }
@@ -163,43 +163,42 @@ function AppRouter() {
     <Router>
       <Routes>
         {/* Public Route - Authentication */}
-        <Route 
-          path="/auth" 
-          element={!currentUser ? <AuthPage /> : <Navigate to="/catalog" replace />} 
+        <Route
+          path="/auth"
+          element={!currentUser ? <AuthPage /> : <Navigate to="/catalog" replace />}
         />
-        
+
         {/* Default redirect */}
-        <Route 
-          path="/" 
-          element={<Navigate to="/catalog" replace />} 
-        />
-        
+        <Route path="/" element={<Navigate to="/catalog" replace />} />
+
         {/* Product Catalog - All authenticated users */}
-        <Route 
-          path="/catalog" 
+        <Route
+          path="/catalog"
           element={
             <ProtectedRoute>
               <Catalog />
             </ProtectedRoute>
-          } 
+          }
         />
-        
+
         {/* Admin Panel - Admin users only */}
-        <Route 
-          path="/admin" 
+        <Route
+          path="/admin"
           element={
             <AdminRoute>
               <AdminPanel />
             </AdminRoute>
-          } 
+          }
         />
 
         {/* Catch all routes */}
-        <Route 
-          path="*" 
+        <Route
+          path="*"
           element={
-            currentUser ? <Navigate to="/catalog" replace /> : <Navigate to="/auth" replace />
-          } 
+            currentUser
+              ? <Navigate to="/catalog" replace />
+              : <Navigate to="/auth" replace />
+          }
         />
       </Routes>
     </Router>
