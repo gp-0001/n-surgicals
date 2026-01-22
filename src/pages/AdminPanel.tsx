@@ -1,4 +1,3 @@
-// src/pages/AdminPanel.tsx
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { productService } from '../services/productService';
@@ -14,6 +13,7 @@ interface Product {
   unitPrice: number;
   createdAt: Date;
   updatedAt: Date;
+  imageUrl?: string;
 }
 
 interface StockUpdate {
@@ -30,6 +30,7 @@ export default function AdminPanel() {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [stockUpdate, setStockUpdate] = useState<StockUpdate | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<Product | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -37,7 +38,8 @@ export default function AdminPanel() {
     category: 'Medicines',
     currentStock: 0,
     minStockLevel: 5,
-    unitPrice: 0
+    unitPrice: 0,
+    imageUrl: ''
   });
   const [stockForm, setStockForm] = useState({ quantity: 0, reason: '' });
 
@@ -61,8 +63,25 @@ export default function AdminPanel() {
       category: 'Medicines',
       currentStock: 0,
       minStockLevel: 5,
-      unitPrice: 0
+      unitPrice: 0,
+      imageUrl: ''
     });
+    setImageFile(null);
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData(f => ({ ...f, imageUrl: reader.result as string }));
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setFormData(f => ({ ...f, imageUrl: '' }));
+      setImageFile(null);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -72,20 +91,21 @@ export default function AdminPanel() {
       if (editingProduct) {
         await productService.updateProduct(
           editingProduct.id,
-          { ...formData, imageUrl: '' },
+          { ...formData },
           userProfile.uid
         );
         setEditingProduct(null);
       } else {
         await productService.addProduct(
-          { ...formData, imageUrl: '' },
+          { ...formData },
           userProfile.uid
         );
         setShowAddForm(false);
       }
-      resetForm();
+      // Refresh product list after successful add or update
       const updated = await productService.getAllProducts();
       setProducts(updated);
+      resetForm();
     } catch (err) {
       console.error('Error saving product:', err);
       alert('Error saving product. Please try again.');
@@ -99,10 +119,12 @@ export default function AdminPanel() {
       category: p.category,
       currentStock: p.currentStock,
       minStockLevel: p.minStockLevel,
-      unitPrice: p.unitPrice
+      unitPrice: p.unitPrice,
+      imageUrl: p.imageUrl || ''
     });
     setEditingProduct(p);
     setShowAddForm(true);
+    setImageFile(null);
   };
 
   const openStockUpdate = (p: Product) => {
@@ -186,7 +208,7 @@ export default function AdminPanel() {
              transition
           "
         >
-          {showAddForm ? 'Cancel' : '+ Add Product'}
+          {showAddForm ? 'Cancel' : '+ Add Product'}
         </button>
       </div>
 
@@ -321,6 +343,27 @@ export default function AdminPanel() {
                 className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter product description"
               />
+            </div>
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Product Image
+              </label>
+              <input
+                type="file"
+                name="image"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
+              />
+              {formData.imageUrl && (
+                <div className="mt-2">
+                  <img
+                    src={formData.imageUrl}
+                    alt="Preview"
+                    className="h-20 w-20 object-cover rounded"
+                  />
+                </div>
+              )}
             </div>
             <div className="md:col-span-2 flex justify-end space-x-3">
               <button

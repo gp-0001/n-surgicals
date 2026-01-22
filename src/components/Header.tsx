@@ -1,4 +1,3 @@
-// src/components/Header.tsx
 import React from 'react';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -18,7 +17,7 @@ export default function Header() {
       <nav className="container mx-auto flex items-center justify-between p-4">
         {/* Brand */}
         <div className="text-5xl font-extrabold uppercase font-serif text-black">
-          N Surgicals
+          Navin Surgicals
         </div>
 
         <div className="flex items-center space-x-6 text-sm">
@@ -28,7 +27,7 @@ export default function Header() {
               href="/admin"
               className="text-black hover:text-gray-700 font-semibold"
             >
-              Admin Panel
+              Admin Panel
             </a>
           )}
 
@@ -37,7 +36,7 @@ export default function Header() {
             <div className="flex items-center space-x-4">
               <div className="text-black">
                 <div className="font-medium">
-                  {userProfile.firstName} {userProfile.lastName}
+                  {userProfile.firstName} {userProfile.lastName}
                 </div>
                 <div className="text-xs capitalize">
                   ({userProfile.role})
@@ -62,5 +61,5 @@ export default function Header() {
         </div>
       </nav>
     </header>
-);
+  );
 }
